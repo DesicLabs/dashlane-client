@@ -1,4 +1,4 @@
-const baseURL = "https://cors-anywhere.herokuapp.com/ws1.dashlane.com:443";
+const baseURL = "https://ws1.dashlane.com";
 
 export const request = async (
   endpoint: string,
