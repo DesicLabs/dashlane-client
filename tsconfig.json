@@ -2,7 +2,7 @@
   "compilerOptions": {
       "baseUrl": ".",
       "paths": { "*": ["types/*"] },
-    "outDir": "./dist/",
+    "outDir": "dist/",
     "lib": ["dom", "dom.iterable", "esnext"],
     "noImplicitAny": true,
     "module": "esnext",

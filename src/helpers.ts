@@ -3,7 +3,8 @@ const baseURL = "https://cors-anywhere.herokuapp.com/ws1.dashlane.com:443";
 export const request = async (
   endpoint: string,
   body: any,
-  headers: any = false
+  headers: any = false,
+  parse: boolean = true
 ) => {
   const form = new FormData();
   Object.keys(body).map(key => {
@@ -17,5 +18,5 @@ export const request = async (
       "x-requested-with": "MAC"
     }
   });
-  return await response.json();
+  return parse ? await response.json() : response.text();
 };

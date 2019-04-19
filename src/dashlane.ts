@@ -4,21 +4,29 @@ import { v4 as uuid } from "uuid";
 import { request } from "./helpers";
 
 const argon2 = require("argon2-browser");
+const { xml2js } = require("xml-js");
 
 export default class Dashlane {
   private username: string;
   private password: string;
   private uki: string;
+  private vault: Array<string> = [];
 
   constructor(username: string = "", password: string = "", uki: string = "") {
     this.setCredentials(username, password, uki);
   }
 
-  setCredentials = (username: string, password: string, uki: string) => {
-    this.username = username;
-    this.password = password;
-    this.uki = uki;
-  }
+  getUKI = () => this.uki;
+
+  setCredentials = (
+    username: string = "",
+    password: string = "",
+    uki: string = ""
+  ) => {
+    username !== "" ? (this.username = username) : null;
+    password !== "" ? (this.password = password) : null;
+    uki !== "" ? (this.uki = uki) : null;
+  };
 
   private decipherArgon2 = async (data: Buffer) => {
     const salt = data.slice(0, 16);
@@ -52,7 +60,7 @@ export default class Dashlane {
     return Buffer.from(inflate.toString()).toString();
   };
 
-  private decipherPBKDF2 = async (data: Buffer, scheme: any) => {
+  private decipherPBKDF2 = async (scheme: any) => {
     let { salt, version, iv, cipher, iterations, digest, compressed } = scheme;
     let keyIV: any;
     let cipherKey = pbkdf2Sync(this.password, salt, iterations, 32, digest);
@@ -74,7 +82,9 @@ export default class Dashlane {
       decipher.update(cipher),
       decipher.final()
     ]);
-    return compressed ? this.uncompress(plaintext.slice(4)) : plaintext;
+    return compressed
+      ? this.uncompress(plaintext.slice(4))
+      : plaintext.toString();
   };
 
   private getPBKDF2IV = async (key: Buffer, salt: Buffer, version: string) => {
@@ -99,75 +109,110 @@ export default class Dashlane {
   };
 
   getVault = async () => {
-    const { fullBackupFile, content } = await request("/12/backup/latest", {
-      login: this.username,
-      uki: this.uki,
-      lock: "nolock",
-      timestamp: 1,
-      sharingTimestamp: 0
-    });
+    const { fullBackupFile, content, transactionList } = await request(
+      "/12/backup/latest",
+      {
+        login: this.username,
+        uki: this.uki,
+        lock: "nolock",
+        timestamp: 1,
+        sharingTimestamp: 0
+      }
+    );
     if (content === "Incorrect authentification")
       throw new Error("Invalid username/password.");
-    return fullBackupFile;
+    this.pushEntriesFromTransactions(transactionList);
+    this.vault.push(fullBackupFile);
+    return true;
   };
 
-  getData = async (base64vault: string) => {
-    const rawVault = Buffer.from(base64vault, "base64").toString();
+  private pushEntriesFromTransactions = (transactionList: any) => {
+    Object.keys(transactionList).map(key => {
+      if (transactionList[key].type === "AUTHENTIFIANT") {
+        this.vault.push(transactionList[key].content);
+      }
+    });
+  };
+
+  private decipherData = async (data: string) => {
+    const rawVault = Buffer.from(data, "base64").toString();
     const type = rawVault.slice(3, 9);
     switch (type) {
       case "argon2":
-        return await this.decipherArgon2(
-          Buffer.from(base64vault, "base64").slice(42)
-        );
+        return await this.decipherArgon2(Buffer.from(data, "base64").slice(42));
       case "pbkdf2": {
-        const data = Buffer.from(base64vault, "base64").slice(45);
-        return await this.decipherPBKDF2(
-          Buffer.from(base64vault, "base64").slice(45),
-          {
-            iterations: 200000,
-            salt: data.slice(0, 16),
-            version: "PBKDF2S",
-            cipher: data.slice(64), //salt/iv/hmachash(32)/ciphers
-            iv: data.slice(16, 32),
-            digest: "sha256",
-            compressed: true
-          }
-        );
+        const slicedData = Buffer.from(data, "base64").slice(45);
+        return await this.decipherPBKDF2({
+          iterations: 200000,
+          salt: slicedData.slice(0, 16),
+          version: "PBKDF2S",
+          cipher: slicedData.slice(64), //salt/iv/hmachash(32)/ciphers
+          iv: slicedData.slice(16, 32),
+          digest: "sha256",
+          compressed: true
+        });
       }
       default: {
-        const data = Buffer.from(base64vault, "base64");
-        return await this.decipherPBKDF2(Buffer.from(base64vault, "base64"), {
+        const buffData = Buffer.from(data, "base64");
+        return await this.decipherPBKDF2({
           iterations: 10204,
-          salt: data.slice(0, 32),
-          version: data.slice(32, 36),
-          cipher: data.slice(
-            data.slice(32, 36).toString() === "KWC3" ? 36 : 32
+          salt: buffData.slice(0, 32),
+          version: buffData.slice(32, 36),
+          cipher: buffData.slice(
+            buffData.slice(32, 36).toString() === "KWC3" ? 36 : 32
           ),
           digest: "sha1",
           iv: "generate",
-          compressed: data.slice(32, 36).toString() === "KWC3"
+          compressed: buffData.slice(32, 36).toString() === "KWC3"
         });
       }
     }
   };
 
-  sendToken = async () => {
-    const response = await request("/7/authentication/sendtoken", {
-      login: this.username
+  getData = async () => {
+    const promises: Array<any> = [];
+    const entries: Array<any> = [];
+    this.vault.map(vault => promises.push(this.decipherData(vault)));
+    const data = await Promise.all(promises);
+    data.map(plainText => {
+      const { root } = xml2js(plainText, { compact: true });
+      const pushed = root.hasOwnProperty("KWDataList")
+        ? root.KWDataList.KWAuthentifiant
+        : root.KWAuthentifiant;
+      if (Array.isArray(pushed))
+        pushed.map(({ KWDataItem }) => entries.push(KWDataItem));
+      else entries.push(pushed.KWDataItem);
     });
+    return entries;
+  };
+
+  sendToken = async () => {
+    const response = await request(
+      "/7/authentication/sendtoken",
+      {
+        login: this.username
+      },
+      {},
+      false
+    );
     return response === "SUCCESS";
   };
 
   registerUKI = async (token: number) => {
     const uki = uuid();
-    const response = await request("/7/authentication/registeruki", {
-      login: this.username,
-      devicename: "Profile Lens",
-      platform: "App",
-      temporary: 0,
-      token,
-      uki
-    });
+    const response = await request(
+      "/7/authentication/registeruki",
+      {
+        login: this.username,
+        devicename: "Profile Lens",
+        platform: "App",
+        temporary: 0,
+        token,
+        uki
+      },
+      {},
+      false
+    );
     if (response === "SUCCESS") {
       this.uki = uki;
       return true;
