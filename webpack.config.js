@@ -12,6 +12,7 @@ module.exports = {
     ]
   },
   target: "web",
+  mode: "production",
   node: {
     buffer: true,
     crypto: true,
@@ -24,7 +25,7 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"]
   },
   output: {
-    filename: "bundle.js",
+    filename: "dashlane.js",
     path: path.resolve(__dirname, "dist")
   }
 };

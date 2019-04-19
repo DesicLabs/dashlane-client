@@ -10,13 +10,17 @@ export default class Dashlane {
   private password: string;
   private uki: string;
 
-  constructor(username: string, password: string, uki: string = "") {
+  constructor(username: string = "", password: string = "", uki: string = "") {
+    this.setCredentials(username, password, uki);
+  }
+
+  setCredentials = (username: string, password: string, uki: string) => {
     this.username = username;
     this.password = password;
     this.uki = uki;
   }
 
-  decipherArgon2 = async (data: Buffer) => {
+  private decipherArgon2 = async (data: Buffer) => {
     const salt = data.slice(0, 16);
     const iv = data.slice(16, 32);
     const cipher = data.slice(64);
@@ -43,12 +47,12 @@ export default class Dashlane {
     return this.uncompress(plaintext.slice(4));
   };
 
-  uncompress = async (data: Buffer) => {
+  private uncompress = async (data: Buffer) => {
     const inflate = inflateSync(data);
     return Buffer.from(inflate.toString()).toString();
   };
 
-  decipherPBKDF2 = async (data: Buffer, scheme: any) => {
+  private decipherPBKDF2 = async (data: Buffer, scheme: any) => {
     let { salt, version, iv, cipher, iterations, digest, compressed } = scheme;
     let keyIV: any;
     let cipherKey = pbkdf2Sync(this.password, salt, iterations, 32, digest);
@@ -73,7 +77,7 @@ export default class Dashlane {
     return compressed ? this.uncompress(plaintext.slice(4)) : plaintext;
   };
 
-  getPBKDF2IV = async (key: Buffer, salt: Buffer, version: string) => {
+  private getPBKDF2IV = async (key: Buffer, salt: Buffer, version: string) => {
     let salted = Buffer.concat([key, salt.slice(0, 8)]);
     const parts = [Buffer.from("")];
     for (let i = 0; i < 3; i++) {
@@ -85,7 +89,7 @@ export default class Dashlane {
     return [keyIV.slice(0, 32), keyIV.slice(32, 48)];
   };
 
-  pbkdf2Sha1 = (bytes: Buffer, iterations: number) => {
+  private pbkdf2Sha1 = (bytes: Buffer, iterations: number) => {
     for (let i = 0; i < iterations; i++) {
       bytes = createHash("sha1")
         .update(bytes)

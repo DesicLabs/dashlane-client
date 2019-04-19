@@ -1,11 +1,20 @@
 {
   "name": "dashlane-js",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A javascript library to fetch/add records from dashlane vault.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "webpack-dev-server --open",
     "build": "webpack"
+  },
+  "main": "dist/dashlane.js",
+  "types": "dist/dashlane.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allroundexperts/dashlane-js.git"
   },
   "keywords": [
     "dashlane",
