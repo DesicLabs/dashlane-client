@@ -1,10 +1,11 @@
-import { createDecipheriv, createHash, pbkdf2Sync, Hash } from "crypto";
+import { createDecipheriv, createHash, pbkdf2Sync } from "crypto";
 import { inflateSync } from "zlib";
+import { v4 as uuid } from "uuid";
 import { request } from "./helpers";
 
 const argon2 = require("argon2-browser");
 
-class Dashlane {
+export default class Dashlane {
   private username: string;
   private password: string;
   private uki: string;
@@ -154,7 +155,7 @@ class Dashlane {
   };
 
   registerUKI = async (token: number) => {
-    const uki = "new test?";
+    const uki = uuid();
     const response = await request("/7/authentication/registeruki", {
       login: this.username,
       devicename: "Profile Lens",
@@ -170,14 +171,3 @@ class Dashlane {
     return false;
   };
 }
-
-const dashlane = new Dashlane(
-  "inovicsolutions@yahoo.com",
-  "Sibi1234@",
-  "dde391cc0e314c309343243534335291-11223bf2-bc61-43f8-8e54-eb4d40e258b0"
-);
-dashlane
-  .getVault()
-  .then(dashlane.getData)
-  .then(console.log)
-  .catch(console.log);
