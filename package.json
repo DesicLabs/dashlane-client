@@ -1,6 +1,6 @@
 {
   "name": "dashlane-js",
-  "version": "1.0.9",
+  "version": "1.1.1",
   "description": "A javascript library to fetch/add records from dashlane vault.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

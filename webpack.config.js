@@ -27,6 +27,7 @@ module.exports = {
   output: {
     filename: "dashlane.js",
     path: path.resolve(__dirname, "dist"),
-    libraryTarget: "umd"
+    libraryTarget: "umd",
+    globalObject: "typeof self !== 'undefined' ? self : this"
   }
 };
