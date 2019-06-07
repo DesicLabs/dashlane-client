@@ -1,10 +1,9 @@
 import { createDecipheriv, createHash, pbkdf2Sync } from "crypto";
 import { inflateSync } from "zlib";
 import { v4 as uuid } from "uuid";
+import { xml2js } from "xml-js";
+import { argon2 } from "argon2-browser";
 import { request } from "./helpers";
-
-const argon2 = require("argon2-browser");
-const { xml2js } = require("xml-js");
 
 export default class Dashlane {
   private username: string;
@@ -34,7 +33,7 @@ export default class Dashlane {
     const cipher = data.slice(64);
     const { hash } = await argon2.hash({
       pass: this.password,
-      salt,
+      salt: salt.toString(),
       time: 3,
       mem: 32768,
       parallelism: 2,
@@ -175,7 +174,7 @@ export default class Dashlane {
     this.vault.map(vault => promises.push(this.decipherData(vault)));
     const data = await Promise.all(promises);
     data.map(plainText => {
-      const { root } = xml2js(plainText, { compact: true });
+      const { root } = xml2js(plainText, { compact: true }) as any;
       const pushed = root.hasOwnProperty("KWDataList")
         ? root.KWDataList.KWAuthentifiant
         : root.KWAuthentifiant;

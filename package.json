@@ -1,13 +1,15 @@
 {
   "name": "dashlane-js",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "description": "A javascript library to fetch/add records from dashlane vault.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "webpack-dev-server --open",
+    "start:node": "node dist/dashlane.node.js",
     "build": "webpack"
   },
-  "main": "dist/dashlane.js",
+  "main": "dist/dashlane.node.js",
+  "browser": "dist/dashlane.client.js",
   "types": "dist/dashlane.d.ts",
   "files": [
     "dist/**/*"
@@ -38,6 +40,8 @@
     "@types/node": "^11.13.5",
     "@types/uuid": "^3.4.4",
     "argon2-browser": "^1.5.3",
+    "form-data": "^2.3.3",
+    "node-fetch": "^2.6.0",
     "uuid": "^3.3.2",
     "xml-js": "^1.6.11"
   }

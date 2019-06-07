@@ -1,6 +1,7 @@
 const path = require("path");
+const webpack = require("webpack");
 
-module.exports = {
+const config = {
   entry: "./src/dashlane.ts",
   module: {
     rules: [
@@ -11,13 +12,7 @@ module.exports = {
       }
     ]
   },
-  target: "web",
   mode: "production",
-  node: {
-    buffer: true,
-    crypto: true,
-    zlib: true
-  },
   devServer: {
     contentBase: "./dist"
   },
@@ -25,9 +20,33 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"]
   },
   output: {
-    filename: "dashlane.js",
     path: path.resolve(__dirname, "dist"),
     libraryTarget: "umd",
     globalObject: "typeof self !== 'undefined' ? self : this"
   }
 };
+
+const webConfig = {
+  ...config,
+  target: "web",
+  node: {
+    buffer: true,
+    crypto: true,
+    zlib: true
+  },
+  output: { ...config.output, filename: "dashlane.client.js" }
+};
+
+const serverConfig = {
+  ...config,
+  target: "node",
+  output: { ...config.output, filename: "dashlane.node.js" },
+  plugins: [
+    new webpack.ProvidePlugin({
+      fetch: ["node-fetch", "default"],
+      FormData: "form-data"
+    })
+  ]
+};
+
+module.exports = [serverConfig, webConfig];

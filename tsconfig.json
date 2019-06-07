@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-      "baseUrl": ".",
-      "paths": { "*": ["types/*"] },
+    "baseUrl": ".",
+    "paths": { "*": ["types/*"] },
     "outDir": "dist/",
     "lib": ["dom", "dom.iterable", "esnext"],
     "noImplicitAny": true,
-    "module": "esnext",
+    "module": "commonjs",
     "target": "es5",
     "jsx": "react",
-    "declaration": true,
+    "declaration": true
   }
 }
