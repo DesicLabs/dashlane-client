@@ -2,13 +2,16 @@ const path = require("path");
 const webpack = require("webpack");
 
 const config = {
-  entry: "./src/dashlane.ts",
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         use: "ts-loader",
         exclude: /node_modules/
+      },
+      {
+        test: /\.node$/,
+        use: "node-loader",
       }
     ]
   },
@@ -28,6 +31,7 @@ const config = {
 
 const webConfig = {
   ...config,
+  entry: "./src/dashlane.client.ts",
   target: "web",
   node: {
     buffer: true,
@@ -39,7 +43,11 @@ const webConfig = {
 
 const serverConfig = {
   ...config,
+  entry: "./src/dashlane.node.ts",
   target: "node",
+  node: {
+    __dirname: true
+  },
   output: { ...config.output, filename: "dashlane.node.js" },
   plugins: [
     new webpack.ProvidePlugin({

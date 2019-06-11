@@ -39,7 +39,7 @@ export default class Dashlane {
       parallelism: 2,
       hashLen: 32,
       type: argon2.ArgonType.Argon2d,
-      distPath: "./argon2/dist/"
+      distPath: "./argon2-browser/"
     });
     const sha512 = createHash("sha512");
     const sha512ed = sha512.update(hash).digest();
@@ -178,9 +178,11 @@ export default class Dashlane {
       const pushed = root.hasOwnProperty("KWDataList")
         ? root.KWDataList.KWAuthentifiant
         : root.KWAuthentifiant;
-      if (Array.isArray(pushed))
-        pushed.map(({ KWDataItem }) => entries.push(KWDataItem));
-      else entries.push(pushed.KWDataItem);
+        if (Array.isArray(pushed)){
+          pushed.map(({ KWDataItem }) => entries.push(KWDataItem));
+        }else{
+            pushed && pushed.hasOwnProperty("KWDataItem") && entries.push(pushed.KWDataItem);
+          }
     });
     return entries;
   };
