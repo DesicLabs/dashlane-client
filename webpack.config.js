@@ -1,5 +1,8 @@
 const path = require("path");
 const webpack = require("webpack");
+const nodeExternals = require('webpack-node-externals');
+
+
 
 const config = {
   module: {
@@ -8,14 +11,11 @@ const config = {
         test: /\.tsx?$/,
         use: "ts-loader",
         exclude: /node_modules/
-      },
-      {
-        test: /\.node$/,
-        use: "node-loader",
       }
     ]
   },
   mode: "production",
+  //devtool: "inline-source-map",
   devServer: {
     contentBase: "./dist"
   },
@@ -45,6 +45,7 @@ const serverConfig = {
   ...config,
   entry: "./src/dashlane.node.ts",
   target: "node",
+  externals: [nodeExternals()],
   node: {
     __dirname: true
   },

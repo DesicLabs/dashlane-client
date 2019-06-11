@@ -1,6 +1,6 @@
 {
   "name": "dashlane-js",
-  "version": "1.1.4",
+  "version": "1.1.8",
   "description": "A javascript library to fetch/add records from dashlane vault.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -29,12 +29,14 @@
   "author": "Sibtain Ali",
   "license": "ISC",
   "devDependencies": {
+    "native-ext-loader": "^2.3.0",
     "node-loader": "^0.6.0",
     "ts-loader": "^5.3.3",
     "typescript": "^3.4.3",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.3.1"
+    "webpack-dev-server": "^3.3.1",
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
     "@types/argon2-browser": "^1.1.0",
