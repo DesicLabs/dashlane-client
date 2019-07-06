@@ -1,8 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
-const nodeExternals = require('webpack-node-externals');
-
-
+const nodeExternals = require("webpack-node-externals");
 
 const config = {
   module: {
@@ -47,7 +45,7 @@ const serverConfig = {
   target: "node",
   externals: [nodeExternals()],
   node: {
-    __dirname: true
+    __dirname: false
   },
   output: { ...config.output, filename: "dashlane.node.js" },
   plugins: [
