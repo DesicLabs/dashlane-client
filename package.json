@@ -1,22 +1,22 @@
 {
-  "name": "dashlane-js",
-  "version": "1.1.8",
-  "description": "A javascript library to fetch/add records from dashlane vault.",
+  "name": "dashlane-client",
+  "version": "1.0.0",
+  "description": "A javascript library to decipher dashlane vault.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "webpack-dev-server --open",
     "start:node": "webpack && node dist/dashlane.node.js",
-    "build": "webpack"
+    "build": "webpack && rm -r ./dist/services/ && rm -r ./dist/argon2/"
   },
   "main": "dist/dashlane.node.js",
-  "browser": "dist/dashlane.client.js",
+  "browser": "dist/dashlane.browser.js",
   "types": "dist/dashlane.d.ts",
   "files": [
     "dist/**/*"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/allroundexperts/dashlane-js.git"
+    "url": "git+https://github.com/allroundexperts/dashlane-client.git"
   },
   "keywords": [
     "dashlane",
@@ -29,11 +29,13 @@
   "author": "Sibtain Ali",
   "license": "ISC",
   "devDependencies": {
+    "base64-loader": "^1.0.0",
+    "dts-bundle-webpack": "^1.0.2",
     "native-ext-loader": "^2.3.0",
     "node-loader": "^0.6.0",
     "ts-loader": "^5.3.3",
     "typescript": "^3.4.3",
-    "webpack": "^4.30.0",
+    "webpack": "^4.38.0",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.3.1",
     "webpack-node-externals": "^1.7.2"
@@ -43,7 +45,7 @@
     "@types/node": "^11.13.5",
     "@types/uuid": "^3.4.4",
     "argon2": "^0.23.0",
-    "argon2-browser": "^1.5.3",
+    "argon2-browser": "^1.10.2",
     "form-data": "^2.3.3",
     "node-fetch": "^2.6.0",
     "uuid": "^3.3.2",
