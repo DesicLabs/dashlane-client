@@ -45,9 +45,7 @@ export default class DashlaneClient implements Client {
     );
   }
 
-  public async addAccount(account: Entry): Promise<boolean> {
-    return false;
-  }
+  public async addAccount(account: Entry): Promise<void> {}
 
   public async registerUKI(token: number): Promise<string> {
     if (!this.username)
