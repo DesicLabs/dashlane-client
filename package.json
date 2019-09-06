@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "webpack-dev-server --open",
     "start:node": "webpack && node dist/dashlane.node.js",
-    "build": "webpack && rm -r ./dist/services/ && rm -r ./dist/argon2/"
+    "build": "webpack && rm -r ./dist/services/ && rm -r ./dist/argon2/",
+    "prepare": "webpack && rm -r ./dist/services/ && rm -r ./dist/argon2/"
   },
   "main": "dist/dashlane.node.js",
   "browser": "dist/dashlane.browser.js",
@@ -16,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/allroundexperts/dashlane-client.git"
+    "url": "git+https://github.com/DesicLabs/dashlane-client.git"
   },
   "keywords": [
     "dashlane",
