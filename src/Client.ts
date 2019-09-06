@@ -17,8 +17,8 @@ export default class DashlaneClient implements Client {
   }
 
   public async login(
-    username: string,
     password: string,
+    username?: string,
     uki?: string
   ): Promise<void> {
     this.username = username;
