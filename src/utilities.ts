@@ -1,6 +1,6 @@
 import { inflateSync } from "zlib";
 import { xml2js } from "xml-js";
-import { KWVaultItem, KWField, RawEntry, Entry } from "./types";
+import { KWVaultItem, KWField, RawEntry } from "./types";
 import { BASE_URL } from "./config";
 
 export const request = async (
@@ -30,7 +30,7 @@ export const uncompress = async (data: Buffer): Promise<string> => {
   return Buffer.from(inflate.toString()).toString();
 };
 
-export const transformItem = (item: string): Entry => {
+export function transformEntry(item: string, type: number = 0) {
   const { root } = xml2js(item, { compact: true }) as KWVaultItem;
   const rawEntry = root.KWAuthentifiant.KWDataItem.reduce(
     (acc: Partial<RawEntry>, value: KWField) => {
@@ -40,12 +40,15 @@ export const transformItem = (item: string): Entry => {
     {}
   ) as RawEntry;
 
-  return {
-    name: rawEntry.Title,
-    username: rawEntry.Email,
-    url: rawEntry.Url,
-    password: rawEntry.Password,
-    type: rawEntry.Category,
-    otp: undefined
-  };
-};
+  return type === 0
+    ? {
+        name: rawEntry.Title,
+        url: rawEntry.Url,
+        type: rawEntry.Category
+      }
+    : {
+        url: rawEntry.Url,
+        username: rawEntry.Email,
+        password: rawEntry.Password
+      };
+}

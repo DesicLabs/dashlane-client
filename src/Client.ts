@@ -1,7 +1,8 @@
-import { transformItem } from "./utilities";
-import { Client, Entry } from "./types";
+import { transformEntry } from "./utilities";
+import { Client, Entry, EntryCredentials } from "./types";
 import { Cipher } from "./services/Cipher";
 import { Dashlane } from "./services/Dashlane";
+import { url } from "inspector";
 
 export default class DashlaneClient implements Client {
   private cipher: Cipher;
@@ -40,9 +41,22 @@ export default class DashlaneClient implements Client {
     return await Promise.all(
       this.vault.map(async entry => {
         const text = await this.cipher.decipherData(this.password, entry);
-        return transformItem(text);
+        return transformEntry(text) as Entry;
       })
     );
+  }
+
+  public async getAccountCredentials(fqdn: string): Promise<EntryCredentials> {
+    if (!this.vault)
+      throw new Error("Vault not found. Make sure to login first.");
+    const entryPromises = this.vault.map(async entry => {
+      const text = await this.cipher.decipherData(this.password, entry);
+      return transformEntry(text, 1) as EntryCredentials & { url: string };
+    });
+    const entries = await Promise.all(entryPromises);
+    const entry = entries.find(({ url }) => url.match(new RegExp(fqdn)));
+    if (!entry) throw new Error("No account found.");
+    return { username: entry.username, password: entry.password, otp: "" };
   }
 
   public async addAccount(account: Entry): Promise<void> {}
