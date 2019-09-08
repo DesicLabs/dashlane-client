@@ -1,5 +1,5 @@
 import { transformEntry } from "./utilities";
-import { Client, Entry, EntryCredentials } from "./types";
+import { Client, Entry, EntryCredentials, FullEntry } from "./types";
 import { Cipher } from "./services/Cipher";
 import { Dashlane } from "./services/Dashlane";
 import { url } from "inspector";
@@ -59,7 +59,7 @@ export default class DashlaneClient implements Client {
     return { username: entry.username, password: entry.password, otp: "" };
   }
 
-  public async addAccount(account: Entry): Promise<void> {}
+  public async addAccount(account: FullEntry): Promise<void> {}
 
   public async registerUKI(token: number): Promise<string> {
     if (!this.username)
