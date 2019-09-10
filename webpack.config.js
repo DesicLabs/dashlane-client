@@ -22,8 +22,8 @@ const config = {
       outputAsModuleFolder: true
     })
   ],
-  mode: "production",
-  //devtool: "inline-source-map",
+  mode: "development",
+  devtool: "source-map",
   devServer: {
     contentBase: "./dist"
   },
