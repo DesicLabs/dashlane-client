@@ -2,7 +2,6 @@ import { transformEntry } from "./utilities";
 import { Client, Entry, EntryCredentials, FullEntry } from "./types";
 import { Cipher } from "./services/Cipher";
 import { Dashlane } from "./services/Dashlane";
-import { url } from "inspector";
 
 export default class DashlaneClient implements Client {
   private cipher: Cipher;
@@ -20,12 +19,17 @@ export default class DashlaneClient implements Client {
   public async login(
     password: string,
     username: string,
-    uki: string
+    uki?: string
   ): Promise<void> {
     this.username = username;
     this.password = password;
-    this.uki = uki;
-    this.vault = await this.dashlane.getVault(this.username, this.uki);
+    if (uki) {
+      this.uki = uki;
+      this.vault = await this.dashlane.getVault(this.username, this.uki);
+    } else {
+      await this.sendToken();
+      throw new Error("UKI is not set. Call registerUKI first");
+    }
   }
 
   public async getAccounts(): Promise<Entry[]> {
@@ -64,8 +68,7 @@ export default class DashlaneClient implements Client {
     return this.uki;
   }
 
-  public async sendToken(username: string): Promise<void> {
-    this.username = username;
-    await this.dashlane.sendToken(username);
+  private async sendToken(): Promise<void> {
+    await this.dashlane.sendToken(this.username);
   }
 }
