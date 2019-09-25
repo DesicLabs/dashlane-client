@@ -9,6 +9,7 @@
 - [getAccountCredentials](README.md#getaccountcredentials)
 - [login](README.md#login)
 - [registerUKI](README.md#registerUKI)
+- [sendToken](README.md#sendToken)
 
 ## Methods
 
@@ -71,6 +72,18 @@
 **Returns:** _Promise‹string›_
 
 ---
+
+### sendToken
+
+▸ **sendToken**(`username`: string): _Promise‹void›_
+
+**Parameters:**
+
+| Name       | Type   |
+| ---------- | ------ |
+| `username` | string |
+
+**Returns:** _Promise‹void›_
 
 ## Type aliases
 

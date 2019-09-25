@@ -11,10 +11,15 @@ export type FullEntryFields = EntryFields & EntryCredentialsFields;
 export type FullEntry = Entry & EntryCredentials;
 
 export interface Client {
-  login: (password: string, username?: string, uki?: string) => Promise<void>;
+  login: (
+    password: string,
+    username?: string,
+    secret?: string
+  ) => Promise<void>;
   getAccounts: () => Promise<Entry[]>;
   getAccountCredentials: (fqdn: string) => Promise<EntryCredentials>;
   addAccount: (account: Entry) => Promise<void>;
+  sendToken: (username: string) => Promise<void>;
   registerUKI: (token: number) => Promise<string>;
 }
 
