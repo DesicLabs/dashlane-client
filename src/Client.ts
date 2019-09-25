@@ -2,7 +2,6 @@ import { transformEntry } from "./utilities";
 import { Client, Entry, EntryCredentials, FullEntry } from "./types";
 import { Cipher } from "./services/Cipher";
 import { Dashlane } from "./services/Dashlane";
-import { url } from "inspector";
 
 export default class DashlaneClient implements Client {
   private cipher: Cipher;
