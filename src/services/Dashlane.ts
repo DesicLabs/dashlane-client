@@ -20,7 +20,12 @@ export class Dashlane {
   }
 
   public async sendToken(login: string): Promise<boolean> {
-    const response = await request("/7/authentication/sendtoken", { login });
+    const response = await request(
+      "/7/authentication/sendtoken",
+      { login },
+      undefined,
+      false
+    );
     return response === "SUCCESS";
   }
 
