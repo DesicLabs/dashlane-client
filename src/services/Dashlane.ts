@@ -14,7 +14,7 @@ export class Dashlane {
       throw new Error("Invalid username/password.");
     return Object.keys(transactionList).reduce((acc, key) => {
       const { type, content } = transactionList[key];
-      if (type === "AUTHENTIFIANT") acc.push(content);
+      if (type === "AUTHENTIFIANT" && content.length > 0) acc.push(content);
       return acc;
     }, []);
   }
