@@ -31,14 +31,19 @@ export class Dashlane {
 
   public async getUKI(login: string, token: number): Promise<string> {
     const uki = uuid();
-    const response = await request("/7/authentication/registeruki", {
-      login,
-      devicename: "Profile Lens",
-      platform: "App",
-      temporary: 0,
-      token,
-      uki
-    });
+    const response = await request(
+      "/7/authentication/registeruki",
+      {
+        login,
+        devicename: "PrivacyPal",
+        platform: "App",
+        temporary: 0,
+        token,
+        uki
+      },
+      undefined,
+      false
+    );
     if (response !== "SUCCESS") throw new Error("Error registering UKI.");
     return uki;
   }
