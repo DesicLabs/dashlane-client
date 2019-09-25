@@ -19,6 +19,8 @@ export interface Client {
   getAccounts: () => Promise<Entry[]>;
   getAccountCredentials: (fqdn: string) => Promise<EntryCredentials>;
   addAccount: (account: Entry) => Promise<void>;
+  sendToken: (username: string) => Promise<void>;
+  registerUKI: (token: number) => Promise<string>;
 }
 
 export type Scheme = {

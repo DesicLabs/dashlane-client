@@ -19,20 +19,13 @@ export default class DashlaneClient implements Client {
 
   public async login(
     password: string,
-    username?: string,
-    uki?: string
+    username: string,
+    uki: string
   ): Promise<void> {
     this.username = username;
     this.password = password;
-    if (uki) {
-      this.uki = uki;
-      this.vault = await this.dashlane.getVault(this.username, this.uki);
-    } else {
-      await this.sendToken();
-      throw new Error(
-        "A token has been sent to the registered email. Get the UKI by calling registerUKI function with token."
-      );
-    }
+    this.uki = uki;
+    this.vault = await this.dashlane.getVault(this.username, this.uki);
   }
 
   public async getAccounts(): Promise<Entry[]> {
@@ -64,14 +57,15 @@ export default class DashlaneClient implements Client {
   public async registerUKI(token: number): Promise<string> {
     if (!this.username)
       throw new Error(
-        "Username not set. Try calling the login function first."
+        "Username not set. Try calling the login or sendToken function first."
       );
     this.uki = await this.dashlane.getUKI(this.username, token);
     this.vault = await this.dashlane.getVault(this.username, this.uki);
     return this.uki;
   }
 
-  private async sendToken(): Promise<void> {
-    await this.dashlane.sendToken(this.username);
+  public async sendToken(username: string): Promise<void> {
+    this.username = username;
+    await this.dashlane.sendToken(username);
   }
 }
