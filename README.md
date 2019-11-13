@@ -107,7 +107,7 @@
 
 ### EntryFields
 
-Ƭ **EntryFields**: \_"name" | "url" | "type"
+Ƭ **EntryFields**: \_"name" | "username" | "url" | "type"
 
 ---
 

@@ -1,4 +1,4 @@
-export type EntryFields = "name" | "url" | "type";
+export type EntryFields = "name" | "username" | "url" | "type";
 
 export type Entry = Record<EntryFields, string>;
 

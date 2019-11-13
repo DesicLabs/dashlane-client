@@ -43,6 +43,7 @@ export function transformEntry(item: string, type: number = 0) {
   return type === 0
     ? {
         name: rawEntry.Title,
+        username: rawEntry.Email,
         url: rawEntry.Url,
         type: rawEntry.Category
       }
