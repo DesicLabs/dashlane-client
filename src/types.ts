@@ -18,7 +18,7 @@ export interface Client {
   ) => Promise<void>;
   getEntries: () => Promise<Entry[]>;
   getEntryCredentials: (id: string) => Promise<EntryCredentials>;
-  addEntry: (entry: Entry) => Promise<void>;
+  addEntry: (entry: Entry) => Promise<string>;
   sendToken: (username: string) => Promise<void>;
   registerUKI: (token: number) => Promise<string>;
 }
