@@ -1,4 +1,4 @@
-export type EntryFields = "name" | "username" | "url" | "type";
+export type EntryFields = "id" | "name" | "username" | "url" | "type";
 
 export type Entry = Record<EntryFields, string>;
 
@@ -16,9 +16,9 @@ export interface Client {
     username?: string,
     secret?: string
   ) => Promise<void>;
-  getAccounts: () => Promise<Entry[]>;
-  getAccountCredentials: (fqdn: string) => Promise<EntryCredentials>;
-  addAccount: (account: Entry) => Promise<void>;
+  getEntries: () => Promise<Entry[]>;
+  getEntryCredentials: (id: string) => Promise<EntryCredentials>;
+  addEntry: (entry: Entry) => Promise<void>;
   sendToken: (username: string) => Promise<void>;
   registerUKI: (token: number) => Promise<string>;
 }
@@ -33,7 +33,7 @@ export type Scheme = {
   compressed: boolean;
 };
 
-export type RawEntryKey =
+export type NewEntryKey =
   | "AnonId"
   | "AutoProtected"
   | "Category"
@@ -53,7 +53,7 @@ export type RawEntryKey =
   | "UserSelectedUrl";
 
 export type KWField = {
-  _attributes: { key: RawEntryKey };
+  _attributes: { key: NewEntryKey };
   _cdata: string;
 };
 
@@ -65,7 +65,7 @@ export type KWVaultItem = {
   };
 };
 
-export type RawEntry = Record<RawEntryKey, string>;
+export type RawEntry = Record<NewEntryKey, string>;
 
 export type ArgonHashOptions = {
   salt: Buffer;

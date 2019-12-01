@@ -42,13 +42,14 @@ export function transformEntry(item: string, type: number = 0) {
 
   return type === 0
     ? {
+        id: rawEntry.Id,
         name: rawEntry.Title,
         username: rawEntry.Email,
         url: rawEntry.Url,
         type: rawEntry.Category
       }
     : {
-        url: rawEntry.Url,
+        id: rawEntry.Id,
         username: rawEntry.Email,
         password: rawEntry.Password
       };
