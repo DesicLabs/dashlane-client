@@ -93,9 +93,9 @@
 
 ---
 
-### RawEntryFields
+### NewEntryFields
 
-Ƭ **RawEntryFields**: \_"name" | "url" | "type" | "username" | "password" | "otp"
+Ƭ **NewEntryFields**: \_"id" | "name" | "url" | "type" | "username" | "password" | "otp"
 
 ---
 
@@ -107,7 +107,7 @@
 
 ### EntryFields
 
-Ƭ **EntryFields**: \_"name" | "username" | "url" | "type"
+Ƭ **EntryFields**: \_"id" | "name" | "username" | "url" | "type"
 
 ---
 
